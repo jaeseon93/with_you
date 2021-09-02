@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+  "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+  "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+  
+<tiles-definitions>
+
+    
+    <!--1.1 환자 레이아웃-->
+    <definition name="patient-layout" template="/WEB-INF/tiles/layouts/patient-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/components/user-header.jsp" />
+        <put-attribute name="content" value="" />        
+        <put-attribute name="footer" value="/WEB-INF/tiles/components/user-footer.jsp" />
+    </definition>
+    <definition name="patient/*/*" extends="patient-layout">
+      <put-attribute name="content" value="/WEB-INF/views/patient/{1}/{2}.jsp" />
+    </definition>
+    
+    
+    <!--1.2 보호자 레이아웃-->
+    <definition name="family-layout" template="/WEB-INF/tiles/layouts/family-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/components/user-header.jsp" />
+        <put-attribute name="content" value="" />        
+        <put-attribute name="footer" value="/WEB-INF/tiles/components/user-footer.jsp" />
+    </definition>
+    <definition name="family/*/*" extends="family-layout">
+      <put-attribute name="content" value="/WEB-INF/views/family/{1}/{2}.jsp" />
+    </definition>
+    
+    
+    <!--1.3간병인 레이아웃-->
+    <definition name="helper-layout" template="/WEB-INF/tiles/layouts/helper-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/components/user-header.jsp" />
+        <put-attribute name="content" value="" />        
+        <put-attribute name="footer" value="/WEB-INF/tiles/components/user-footer.jsp" />
+    </definition>
+    <definition name="helper/*/*" extends="helper-layout">
+      <put-attribute name="content" value="/WEB-INF/views/helper/{1}/{2}.jsp" />
+    </definition>
+    
+    
+    <!--2.  관리자 레이아웃-->   
+ 	 <definition name="admin-layout" template="/WEB-INF/tiles/layouts/admin-layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/components/admin-header.jsp" />
+        <put-attribute name="aside" value="/WEB-INF/tiles/components/admin-aside.jsp" />        
+        <put-attribute name="footer" value="/WEB-INF/tiles/components/admin-footer.jsp" />
+    </definition>
+    
+   <definition name="admin/adminlogin" template="/WEB-INF/views/admin/adminlogin.jsp"/>      
+
+    
+   <definition name="admin/*/*" extends="admin-layout">      
+      <put-attribute name="content" value="/WEB-INF/views/admin/{1}/{2}.jsp" />
+    </definition>
+    
+    <!--3. 레이아웃을 home 레이아웃-->    
+    <definition name="common-layout" template="/WEB-INF/tiles/layouts/common-layout.jsp">
+        <put-attribute name="header" value="" />
+        <put-attribute name="content" value="" />        
+        <put-attribute name="footer" value="" />
+    </definition>
+    <definition name="common/*/*" extends="common-layout">
+        <put-attribute name="content" value="/WEB-INF/views/common/{1}/{2}.jsp" />    
+    </definition>
+
+ 
+
+</tiles-definitions>

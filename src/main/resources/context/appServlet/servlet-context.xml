@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+
+	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	    <beans:property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+	    <beans:property name="order" value="1" />
+	</beans:bean>
+	 
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+	<beans:property name="definitions">
+	    <beans:list>
+	        <beans:value>/WEB-INF/tiles/tiles.xml</beans:value>
+	    </beans:list>
+	</beans:property>
+	</beans:bean>
+	 
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	    <beans:property name="prefix" value="/WEB-INF/views/" />
+	    <beans:property name="suffix" value=".jsp" />
+	    <beans:property name="order" value="2" />
+	</beans:bean>
+	<interceptors>
+	
+	
+	
+		<!--로그인 PreHandle 코드 재선 -->
+		<interceptor>
+			<mapping path="/familyLogin.do"/> 	
+			<mapping path="/home.do"/> 	
+			<beans:bean id="floginPreIntercep" 
+						class="co.withyou.care.family.Login.interceptor.PreHandlerInterceptor">
+			</beans:bean>
+		</interceptor> 
+		<interceptor>
+		  	<mapping path="/helperLogin.do"/>	
+		  	<mapping path="/home.do"/> 
+			<beans:bean id="hloginPreIntercep" 
+						class="co.withyou.care.helper.Login.interceptor.PreHandlerInterceptor">
+			</beans:bean>
+		</interceptor>
+		
+		<interceptor>
+ 			<mapping path="/patientLogin.do"/>
+ 			<mapping path="/home.do"/> 	
+			<beans:bean id="ploginPreIntercep" 
+						class="co.withyou.care.patient.Login.interceptor.PreHandlerInterceptor">
+			</beans:bean>
+		</interceptor>	
+			
+		<!--로그인 PostHandle 코드  재선-->
+		<interceptor>
+			<mapping path="/loginCheck.do"/>			
+			<beans:bean id="floginPostIntercep" 
+						class="co.withyou.care.family.Login.interceptor.PostHandlerInterceptor">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/helperLoginCheck.do"/>			
+			<beans:bean id="hloginPostIntercep" 
+						class="co.withyou.care.helper.Login.interceptor.PostHandlerInterceptor">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/patientLoginCheck.do"/>			
+			<beans:bean id="ploginPostIntercep" 
+						class="co.withyou.care.patient.Login.interceptor.PostHandlerInterceptor">
+			</beans:bean>
+		</interceptor>	
+		
+	<!-- 세션확인 -->
+      <interceptor>
+           <mapping path="*.do"/>   
+           <exclude-mapping path="/familyLogin.do"/> <!-- 로그인 / 회원가입 / 메인 홈으로 가는 컨트롤러 제외 -->
+           <exclude-mapping path="/helperLogin.do"/>
+           <exclude-mapping path="/patientLogin.do"/>
+           <exclude-mapping path="/home.do"/>
+           <exclude-mapping path="/signUpFormFamily.do"/>
+           <exclude-mapping path="/signUpFormHelper.do"/>
+           <exclude-mapping path="/sessionAlert.do"/>
+         <beans:bean id="sessionPreIntercep" 
+                  class="co.withyou.care.common.session.interceptor.SessionPreHandler">
+         </beans:bean>
+      </interceptor>
+      
+		<!-- 알림 관련 handler -->
+		<interceptor>
+			<mapping path="/applyService.do"/>			
+			<beans:bean id="PostchangeServiceStateS01" 
+						class="co.withyou.care.common.alarm.interceptor.PostchangeServiceStateS01">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/payResult.do"/>			
+			<beans:bean id="PostChangeServiceStateS03" 
+						class="co.withyou.care.common.alarm.interceptor.PostChangeServiceStateS03">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/setStartTime.do"/>			
+			<beans:bean id="PreHelperStart" 
+						class="co.withyou.care.common.alarm.interceptor.PreHelperStart">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/setEndTime.do"/>			
+			<beans:bean id="PreHelperEnd" 
+						class="co.withyou.care.common.alarm.interceptor.PreHelperEnd">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/helperLeave.do"/>			
+			<beans:bean id="PreHelperLeave" 
+						class="co.withyou.care.common.alarm.interceptor.PreHelperLeave">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/outOfTheArea.do"/>			
+			<beans:bean id="PreOutOfTheArea" 
+						class="co.withyou.care.common.alarm.interceptor.PreOutOfTheArea">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/chatInsert.do"/>			
+			<beans:bean id="PostInsertMsg" 
+						class="co.withyou.care.common.alarm.interceptor.PostInsertMsg">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/confirm.do"/>			
+			<beans:bean id="PostChangeServiceStateS02" 
+						class="co.withyou.care.common.alarm.interceptor.PostChangeServiceStateS02">
+			</beans:bean>
+		</interceptor>
+		<interceptor>
+			<mapping path="/reject.do"/>			
+			<beans:bean id="PostChangeServiceStateS05" 
+						class="co.withyou.care.common.alarm.interceptor.PostChangeServiceStateS05">
+			</beans:bean>
+		</interceptor>
+	</interceptors>
+	
+	
+	<context:component-scan base-package="co.withyou.care" />
+	
+	<!-- 웹소켓 boy 찬진 -->
+	<!-- 
+	<beans:bean id="echoHandler" class="co.withyou.care.common.chat.common.EchoHandler" />	
+	<websocket:handlers>
+		<websocket:mapping handler="echoHandler" path="/care" />
+		<websocket:handshake-interceptors>
+			<beans:bean class="co.withyou.care.common.chat.common.HandshakeInterceptor" />
+		</websocket:handshake-interceptors>
+		<websocket:sockjs />
+	</websocket:handlers>
+	 -->
+	<!-- 웹소켓 끗 -->
+	
+	<!-- 파일 업로드 재선  -->
+	<!-- MultipartResolver 설정-->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<beans:property name="maxUploadSize" value="100000000" />
+	<beans:property name="maxInMemorySize" value="100000000" />
+	</beans:bean>
+	
+</beans:beans>

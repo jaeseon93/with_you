@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="co.withyou.care.family.patientUpdate.mapper.PatientUpdateMapper">
+
+
+	
+	<select id="getSelect" parameterType="LoginPatientVO" resultType="LoginPatientVO">
+		SELECT *
+		FROM patient
+		WHERE familyNo=#{familyNo}
+	</select>
+	
+	<update id="Update" parameterType="PatientUpdateVo">
+		UPDATE patient
+		SET patientAddr = #{patientAddr}, patientTel=#{patientTel}, patientFamilyTel = #{patientFamilyTel},
+			patientDisease =#{patientDisease}, patientMedication=#{patientMedication}, patientUnique=#{patientUnique}
+		WHERE familyNo=#{familyNo}
+	</update>
+</mapper>

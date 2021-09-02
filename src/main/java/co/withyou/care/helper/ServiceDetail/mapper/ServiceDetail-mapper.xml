@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="co.withyou.care.helper.ServiceDetail.mapper.ServiceDetailMapper">
+
+	<!--알람을 위해 일부 컬럼 추가-->
+	<select id="getServiceDetail" parameterType="DetailVo"
+		resultType="map">
+		
+			 SELECT p.patientno "patientNO",s.serviceno "serviceNo", p.patientname "patientName", p.patientaddr 
+"patientAddr", p.patientsex "patientSex",p.patientbirth "patientBirth", p.patientfamilytel 
+"patientFamilyTel", p.patientdisease "patientDisease", p.patientgrade "patientGrade", p.patientblood 
+"patientBlood", p.patientmedication "patientMedication",p.patientunique "patientUnique", p.patienttel 
+"patientTel",h.helpername "helperName", s.servicestarttime "serviceStartTime", s.serviceendtime 
+"serviceEndTime", s.servicedemand "serviceDemand", s.familyNo "familyNo", s.serviceprice "servicePrice", 
+s.helperprice "helperPrice", s.serviceprice * (1-c.codename) as "commission" 
+FROM patient p,serviceapply s, code c, helper h
+WHERE h.helperno = s.helperno and h.helperno = #{helperNo} and s.patientno 
+= p.patientno and h.commissiongrade = c.codeid and s.serviceno = #{serviceNo}
+	</select>
+	<select id ="getPatientReview" parameterType="PatientReviewVo" resultType="map">
+			
+		SELECT reviewwriter "reviewWriter",reviewdate "reviewDate",
+       		   reviewcontents "reviewContents" ,reviewstar "reviewStar",reviewno "reviewNo"
+		FROM review
+		WHERE serviceNo IN (
+    				SELECT serviceNo FROM serviceapply
+    				WHERE familyNo = #{familyNo}) AND reviewWriter not in #{familyNo}
+				
+	</select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.common.alarm.mapper.AlarmMapper">
+
+	<select id="getAlarmCount" parameterType="int" resultType="int">
+		SELECT COUNT(ALARMNO) FROM ALARM WHERE ALARMRECEIVERNO = #{value} AND ALARMCHECK='N'
+	</select>
+
+	<select id="getAlarmListFamily" parameterType="int" resultType="map"> 
+		SELECT ALARMNO "alarmNo", ALARMTYPE "alarmType", ALARMRECEIVERNO "alarmReceiverNo", 
+				ALARMSENDERNO "alarmSenderNo", ALARMTIME "alarmTime", ALARMCHECK "alarmCheck", 
+				SERVICENO "serviceNo", HELPERNAME "helperName", CODENAME "codeName", 
+				CODEVALID "codeValid"
+        FROM ALARM, CODE, HELPER
+        WHERE ALARMTYPE=CODEID
+        AND HELPERNO(+)=ALARMSENDERNO
+        AND ALARMRECEIVERNO = #{value} 
+        AND CODEVALID ='Y'
+        ORDER BY ALARMTIME DESC
+	</select>
+
+	<select id="getAlarmListHelper" parameterType="int" resultType="map"> 
+		SELECT ALARMNO "alarmNo", ALARMTYPE "alarmType", ALARMRECEIVERNO "alarmReceiverNo", 
+				ALARMSENDERNO "alarmSenderNo", ALARMTIME "alarmTime", ALARMCHECK "alarmCheck", 
+				SERVICENO "serviceNo", FAMILYNAME "familyName", CODENAME "codeName", 
+				CODEVALID "codeValid"
+        FROM ALARM, CODE, FAMILY
+        WHERE ALARMTYPE=CODEID
+        AND familyNO(+)=ALARMSENDERNO
+        AND ALARMRECEIVERNO = #{value} 
+        AND CODEVALID ='Y'
+        ORDER BY ALARMTIME DESC
+	</select>
+	
+	<select id="getPatientName" parameterType="int" resultType="map"> 
+		SELECT PATIENTNAME "patientName" FROM PATIENT WHERE FAMILYNO = #{value}
+	</select>
+		
+	<insert id="insertAlarm" parameterType="co.withyou.care.common.alarm.service.AlarmVO">
+		INSERT INTO ALARM(ALARMNO, ALARMTYPE, ALARMRECEIVERNO, ALARMSENDERNO, 
+							ALARMTIME, SERVICENO)
+		VALUES(ALARM_SQ.NEXTVAL, #{alarmType}, #{alarmReceiverNo}, #{alarmSenderNo}, 
+				SYSDATE, <if test="serviceNo != 0">#{serviceNo}</if> <if test="serviceNo == 0">null</if>)
+	</insert>
+	
+	<update id="updateAlarmCheck" parameterType="int">
+	    UPDATE ALARM
+        SET ALARMCHECK='Y'
+        WHERE ALARMRECEIVERNO = #{value}
+        AND ALARMCHECK='N'
+	</update>
+	
+</mapper>

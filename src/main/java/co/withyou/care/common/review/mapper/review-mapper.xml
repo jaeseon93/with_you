@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.common.review.mapper.ReviewMapper">
+
+	<select id="selectReview" resultType="co.withyou.care.common.review.service.ReviewVO" parameterType="co.withyou.care.common.review.service.ReviewVO">
+		SELECT * FROM REVIEW 
+		WHERE SERVICENO = #{serviceNo}
+		AND REVIEWWRITER = #{reviewWriter}
+	</select>
+	
+	<insert id="insertReview" parameterType="co.withyou.care.common.review.service.ReviewVO">
+		INSERT INTO REVIEW (REVIEWNO, REVIEWWRITER, REVIEWDATE, REVIEWCONTENTS, 
+							REVIEWFILE, REVIEWSTAR, SERVICENO) 
+		VALUES (REVIEW_SQ.NEXTVAL, #{reviewWriter}, SYSDATE, #{reviewContents}, 
+				#{reviewFile}, #{reviewStar}, #{serviceNo})
+	</insert>
+	
+	<delete id="deleteReview" parameterType="int">
+		DELETE FROM REVIEW WHERE REVIEWNO = #{value}
+	</delete>
+	
+	<update id="updateReview" parameterType="co.withyou.care.common.review.service.ReviewVO">
+		UPDATE REVIEW 
+		SET REVIEWDATE = SYSDATE, 
+		REVIEWCONTENTS = #{reviewContents}, 
+		REVIEWSTAR = #{reviewStar}, 
+		REVIEWFILE = #{reviewFile} 
+		WHERE REVIEWNO = #{reviewNo}
+	</update>
+	
+</mapper> 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="co.withyou.care.family.Update.mapper.FamilyUpdateMapper">
+
+	<!-- 로그인 -->
+	<select id="getSelect" parameterType="LoginFamilyVO"
+		resultType="LoginFamilyVO">
+		SELECT familyName,familyBirth,familyAddr,familyTel,familyEmail,familySex
+		FROM family
+		WHERE familyNo=#{familyNo}
+	</select>
+	
+	<update id="Update" parameterType="FamilyUpdateVo">
+		UPDATE family
+		<set>
+		<if test="familyAddr != null"></if>familyAddr=#{familyAddr},
+		<if test="familyTel != null">familyTel=#{familyTel},</if>
+		<if test="familyPw != null">familyPw=#{familyPw}</if>		
+		</set>
+		WHERE familyNo=#{familyNo}
+	</update>
+</mapper>

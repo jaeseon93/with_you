@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.common.chat.mapper.ChatMapper">
+
+	<insert id="chatInsert" parameterType="ChatVo">
+		INSERT INTO CHAT (
+						CHATNO,
+						<if test='userType != null and userType =="f"'> 
+							SENDERNO, RECEIVERNO,
+						</if>
+						<if test='userType != null and userType =="h"'> 
+							SENDERNO, RECEIVERNO, 
+						</if>
+						CHATDATE, CHATCONTENTS, CHATCHECK
+						)	
+				VALUES (
+						chat_sq.nextval,
+						<if test='userType != null and userType =="f"'>
+							#{familyNo}, #{helperNo},
+						</if>
+						<if test='userType != null and userType =="h"'>
+							#{helperNo}, #{familyNo},
+						</if>
+						sysdate,
+						#{chatContents},
+						1
+						)
+		
+	</insert>
+	
+	<select id="chatSelectList" parameterType="ChatVo" resultType="map">
+		WITH N AS (SELECT FAMILYNO, FAMILYNAME, 'f' userType
+                    FROM FAMILY
+                    UNION ALL
+                    SELECT HELPERNO, HELPERNAME, 'h' userType 
+                    FROM HELPER)
+		SELECT C.CHATNO "chatNo",
+		        C.SENDERNO "senderNo",
+		        C.RECEIVERNO "receiverNo",
+		        TO_CHAR(C.CHATDATE, 'MM-DD hh24:MI') "chatDate",
+		        C.CHATCONTENTS "chatContents",
+		        C.CHATCHECK "chatCheck",
+		        (SELECT USERTYPE
+	                FROM N
+	                WHERE C.SENDERNO = N.FAMILYNO) "userType",
+		        (SELECT FAMILYNAME
+	                FROM N
+	                WHERE C.SENDERNO = N.FAMILYNO) "senderName",		        		        
+		        (SELECT FAMILYNAME
+	                FROM N
+	                WHERE C.RECEIVERNO = N.FAMILYNO) "receiverName",
+	            (select familyNo
+                    from N
+                    where C.receiverNo = N.familyNo) "familyNo"
+		FROM CHAT C
+		WHERE	( C.SENDERNO = #{familyNo} AND C.RECEIVERNO = #{helperNo} ) 
+				OR ( C.SENDERNO = #{helperNo} AND C.RECEIVERNO = #{familyNo} )
+		ORDER BY C.CHATDATE
+	</select>
+	
+	<update id="chatUpdate" parameterType="ChatVo">
+		UPDATE CHAT
+		SET CHATCHECK = 0
+		WHERE 
+		<if test='userType != null and userType =="f"'>
+			SENDERNO = #{helperNo} AND RECEIVERNO = #{familyNo}
+		</if>
+		<if test='userType != null and userType =="h"'>
+			SENDERNO = #{familyNo} AND RECEIVERNO = #{helperNo}
+		</if>
+	</update>
+</mapper>

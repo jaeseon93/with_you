@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<typeAliases>
+		<!-- 아름  -->
+		<typeAlias type="co.withyou.care.common.signUp.service.FamilyVO" alias="signUpFamilyVO"/>
+		<typeAlias type="co.withyou.care.common.signUp.service.HelperVO" alias="signUpHelperVO"/>
+		<typeAlias type="co.withyou.care.common.signUp.service.PatientVO" alias="signPatientVO"/>
+	
+	
+		
+		
+		
+		<!-- girl 재선  -->
+		<typeAlias type="co.withyou.care.family.Login.service.FamilyVO" alias="LoginFamilyVO"/>
+		<typeAlias type="co.withyou.care.helper.Login.service.HelperVO" alias="LoginHelperVO"/>
+		<typeAlias type="co.withyou.care.patient.Login.service.PatientVO" alias="LoginPatientVO"/>
+		<typeAlias type="co.withyou.care.patient.findload.service.FamilyVO" alias="CallFamilyVO"/>
+		<typeAlias type="co.withyou.care.helper.serviceHistory.service.ServiceHistoryVo" alias="ServiceHistoryVo"/>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!-- boy 찬진 -->
+		<typeAlias type="co.withyou.care.common.pay.service.PayVo" alias="PayVo"/>
+		<typeAlias type="co.withyou.care.family.search.service.SearchFilterVo" alias="SearchFilterVo"/>
+		<typeAlias type="co.withyou.care.family.apply.service.ApplyServiceVo" alias="ApplyServiceVo"/>
+		<typeAlias type="co.withyou.care.common.geoLocation.service.PatientLocVO" alias="PatientLocVO"/>
+		<typeAlias type="co.withyou.care.family.bestLike.service.BestLikeVo" alias="BestLikeVo"/>
+		<typeAlias type="co.withyou.care.family.blackList.service.BlackListVo" alias="BlackListVo"/>
+		<typeAlias type="co.withyou.care.common.chat.service.ChatVo" alias="ChatVo"/>
+		
+		
+		
+		
+		
+ 	
+ 		<!-- original by 성훈 -->
+ 		<typeAlias type="co.withyou.care.family.Update.service.FamilyUpdateVo" alias="FamilyUpdateVo"/>
+ 		<typeAlias type="co.withyou.care.helper.update.service.HelperVo" alias="UpdateHelperVo"/>
+ 		<typeAlias type="co.withyou.care.helper.schedule.service.ApplyVo" alias="ScheduleSelectVo"/>
+ 		<typeAlias type="co.withyou.care.family.patientUpdate.service.PatientUpdateVO" alias="PatientUpdateVo"/>
+		<typeAlias type="co.withyou.care.helper.applyList.service.ServiceApplyListVo" alias="ApplyListVo"/>
+		<typeAlias type="co.withyou.care.helper.ServiceDetail.service.ServiceDetailVo" alias="DetailVo"/>
+		<typeAlias type="co.withyou.care.helper.confirm.service.ConfirmVo" alias="confirmVo"/>
+ 		<typeAlias type="co.withyou.care.helper.reject.service.RejectVo" alias="RejectVo"/>
+ 		<typeAlias type="co.withyou.care.helper.taltwoi.service.HelperTaltwoiVo" alias="HelperTaltwoiVo"/>
+ 		<typeAlias type="co.withyou.care.family.familyTaltoe.service.FamilyTaltoeVo" alias="FamilyTaltoeVo"/>
+ 		<typeAlias type="co.withyou.care.family.familyTaltoe.service.PatientTaltoeVo" alias="PatientTaltoeVo"/>
+ 		<typeAlias type="co.withyou.care.hospital.GwangMyeong.service.GwangMyeongVo" alias="GwangMyeongVo"/>
+ 		<typeAlias type="co.withyou.care.hospital.GwangMyeong.service.SeoulVo" alias="SeoulVo"/>
+ 		<typeAlias type="co.withyou.care.hospital.GwangMyeong.service.HospitalVo" alias="HospitalVo"/>
+ 		<typeAlias type="co.withyou.care.family.searchHospital.service.SearchHospitalVo" alias="SearchHospitalVo"/>
+ 		<typeAlias type="co.withyou.care.helper.ServiceDetail.service.PatientReviewVo" alias="PatientReviewVo"/>
+ 		
+ 		<!-- 치수  -->
+ 		
+ 		
+ 		
+ 		
+ 		
+ 	</typeAliases>
+</configuration>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.withyou.care.family.search.mapper.SearchMapper">
+	
+	<select id="getSelectList" parameterType="SearchFilterVo" resultType="map">
+		SELECT HELPERNO "helperNo",
+				HELPERNAME "helperName",
+				HELPERPROFILE "helperProfile",
+			    HELPERWORKAREA "helperWorkArea",
+			    HELPERSTARTTIME "helperStartTime",
+			    HELPERENDTIME "helperEndTime" 
+		FROM HELPER
+		<where>
+			<if test="helperWorkArea != null and helperWorkArea != ''">
+				HELPERWORKAREA LIKE #{helperWorkArea}
+			</if>
+			
+			<if test="helperStartTime != null and helperStartTime != ''">
+				AND HELPERSTARTTIME <![CDATA[<=]]> #{helperStartTime}
+			</if>
+				
+			<if test="helperEndTime != null and helperEndTime != ''">
+				AND HELPERENDTIME >= #{helperEndTime}
+			</if>
+			
+			<!-- 
+			<if test='certifiName != null and certifiName == "y"'>
+				AND EXISTS ( SELECT CERTIFINAME "certifiNo" FROM CERTIFICATION 
+								WHERE HELPER.HELPERNO = CERTIFICATION.HELPERNO)
+			</if>
+			
+			<if test='certifiName != null and certifiName == "n"'>
+				AND NOT EXISTS ( SELECT CERTIFINAME "certifiName" FROM CERTIFICATION 
+										WHERE HELPER.HELPERNO = CERTIFICATION.HELPERNO)
+			</if> 
+			-->
+			
+				AND HELPERNO NOT IN (SELECT HELPERNO "helperNo" FROM BLACKLIST 
+													WHERE FAMILYNO = #{familyNo})
+		</where>
+	</select>
+	
+	<!--경력과 자격증이 없으면 목록에 안떠서 아우터조인으로 수정함-->
+	<select id="getSelect" parameterType="String" resultType="map">
+		SELECT H.HELPERNO "helperNo",
+				H.HELPERNAME "helperName",
+				H.HELPERWORKAREA "helperWorkArea",
+				H.HELPERSTARTTIME "helperStartTime",
+				H.HELPERENDTIME "helperEndTime",
+				H.HELPERPROFILE "helperProfile",
+				H.HELPERSEX "helperSex",
+				H.HELPEREMAIL "helperEmail",
+				H.HELPERUNIQUE "helperUnique",
+				C.CERTIFINO "certifiNo",
+				C.CERTIFINAME "certifiName",
+				CA.CAREERNO "careerNo",
+				CA.CAREERORGAN "careerOrgan",
+				TO_CHAR(CA.CAREERSTART, 'YYYY-MM-DD') "careerStart",
+				TO_CHAR(CA.CAREEREND, 'YYYY-MM-DD') "careerEnd"
+		 FROM HELPER H, CERTIFICATION C, CARRER CA
+		 WHERE H.HELPERNO = C.HELPERNO(+)
+		 AND H.HELPERNO = CA.HELPERNO(+)
+		 AND H.HELPERNO = #{value}
+	</select>
+	
+	<!-- 후기 셀렉트  -->
+	<select id="getSelectList2" parameterType="String" resultType="map">
+		SELECT R.REVIEWWRITER "reviewWriter", 
+				R.REVIEWDATE "reviewDate", 
+				R.REVIEWCONTENTS "reviewContents", 
+				R.REVIEWSTAR "reviewStar", 
+				R.REVIEWFILE "reviewFile", 
+				R.SERVICENO "serviceNo", 
+				F.FAMILYEMAIL "familyEmail", 
+				F.FAMILYNAME "familyName",
+				S.HELPERNO "helperNo"
+		FROM REVIEW R, SERVICEAPPLY S, FAMILY F
+		WHERE R.SERVICENO = S.SERVICENO
+		AND R.REVIEWWRITER = F.FAMILYNO
+		AND S.HELPERNO = #{helperNo}
+	</select>
+	
+</mapper>

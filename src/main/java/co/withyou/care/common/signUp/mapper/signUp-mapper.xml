@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.common.signUp.mapper.SignUpMapper">
+
+	<select id="checkEmailFamily" resultType="int" parameterType="signUpFamilyVO">
+		SELECT count(*) FROM FAMILY WHERE FAMILYEMAIL = #{familyEmail}
+	</select>
+	
+	<select id="checkEmailHelper" resultType="int" parameterType="signUpHelperVO">
+		SELECT count(*) FROM HELPER WHERE HELPEREMAIL = #{helperEmail}
+	</select>
+	
+	<select id="selectFamilyNo" resultType="int" parameterType="signUpFamilyVO" >
+		SELECT FAMILYNO FROM FAMILY WHERE FAMILYEMAIL = #{familyEmail}
+	</select>
+	
+	<select id="checkPatientVCode" resultType="int" parameterType="String">
+		SELECT count(*) FROM Patient WHERE patientVcode = #{value}
+	</select>
+	
+	
+	<insert id="insertFamily" parameterType="signUpFamilyVO">
+		insert into family(FAMILYNO, FAMILYNAME, FAMILYBIRTH, FAMILYADDR, FAMILYTEL, 
+							FAMILYEMAIL, FAMILYPW, FAMILYJOINDATE, FAMILYSEX)
+		VALUES(FAMILY_SQ.nextval, #{familyName}, #{familyBirth}, #{familyAddr}, #{familyTel}, 
+				#{familyEmail}, #{familyPw}, SYSDATE, #{familySex})
+	</insert>
+	
+	<insert id="insertPatient" parameterType="signPatientVO">
+		insert into patient(PATIENTNO, PATIENTNAME, PATIENTADDR, PATIENTSEX, PATIENTBIRTH, 
+							PATIENTFAMILYTEL, PATIENTDISEASE, PATIENTGRADE, PATIENTBLOOD, PATIENTMEDICATION,
+							PATIENTZONE, PATIENTUNIQUE, PATIENTVCODE, PATIENTTEL, FAMILYNO)
+		values(PATIENT_SQ.NEXTVAL, #{patientName}, #{patientAddr}, #{patientSex}, #{patientBirth}, 
+				#{patientFamilyTel}, #{patientDisease}, #{patientGrade}, #{patientBlood}, #{patientMedication}, 
+				#{patientZone}, #{patientUnique}, #{patientVcode}, #{patientTel}, #{familyNo})
+	</insert>
+	
+	<insert id="insertHelper" parameterType="signUpHelperVO">
+
+	
+		INSERT INTO HELPER(HELPERNO, HELPERNAME, HELPERBIRTH, HELPERSEX, HELPERADDR
+	            , HELPERTEL, HELPEREMAIL, HELPERPW, HELPERWORKAREA, HELPERSTARTTIME
+	            , HELPERENDTIME, HELPERUNIQUE, HELPERJOINDATE
+	            <if test="helperProfile != null and helperProfile != ''">
+	            ,HELPERPROFILE
+	            </if>
+	            )
+	    VALUES(HELPER_SQ.NEXTVAL, #{helperName}, #{helperBirth}, #{helperSex}, #{helperAddr}
+	            , #{helperTel}, #{helperEmail}, #{helperPw}, #{helperWorkArea}, #{helperStartTime}
+	            , #{helperEndTime}, #{helperUnique}, SYSDATE 
+	            <if test="helperProfile != null and helperProfile != ''">
+	            ,#{helperProfile}
+	            </if>
+	            )
+	</insert>
+	
+	
+</mapper> 

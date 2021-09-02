@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="co.withyou.care.family.searchHospital.mapper.SearchhospitalMapper">
+	<select id="selectList" parameterType="SearchHospitalVo" resultType="map">
+		select trim('"' from hospitalName) as hospitalName,
+			   trim('"' from hospitaladdr) as hospitalAddr,
+			   trim('"' from hospitaltel) as hospitalTel,
+			   trim('"' from hospitalsickbad) as hospitalSickbad,
+       		   trim('"' from hospitallrm) as hospitalLrm,
+       		   trim('"' from hospitalmedstaf) hospitalMedstaf,
+       		   trim('"' from hospitallogt) hospitalLogt,
+       		   trim('"' from hospitallat) hospitalLat
+from hospital
+where hospitalName like '%'||#{searchKey}||'%' or 
+	  hospitalAddr like '%'||#{searchKey}||'%' or 
+	  hospitalTel like '%'||#{searchKey}||'%' 
+	
+	</select>
+</mapper>

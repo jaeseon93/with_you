@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- SqlSession setup for MyBatis Database Layer -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" /> 
+		<property name="configLocation" value="classpath:context/sql-map-config.xml" />  <!-- mytise 전체 환경설정, 내용 없어도 됨 -->
+		<property name="mapperLocations" value="classpath:co/withyou/care/*/*/mapper/*.xml" />  <!--  실제 mapper 위치 -->
+	</bean>
+	
+	<!-- mapper interface가 있는 패키지 설정해줌 -->
+	<bean id="dsScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer" >
+		<property name="basePackage" value="co.withyou.care.*.*.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSession" />
+	</bean>
+</beans>

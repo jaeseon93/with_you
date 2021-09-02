@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.withyou.care.family.apply.mapper.ApplyMapper">
+	
+	<insert id="applyResultInsert" parameterType="ApplyServiceVo">
+		INSERT INTO SERVICEAPPLY (
+				SERVICENO, SERVICESTARTTIME, HELPERPRICE, SERVICESTATUS, SERVICEENDTIME,
+				SERVICEPRICE, SERVICEDATE, SERVICEDEMAND, HELPERNO, PATIENTNO, APPLYDATE, SERVICEAREA, FAMILYNO)
+		VALUES	( 
+				service_sq.nextval, 
+				#{serviceStartTime }, 
+				(to_number(#{serviceEndTime})-to_number(#{serviceStartTime}))*(select codename from code where codeid='P01')
+					* (SELECT CODENAME 
+						FROM CODE 
+						WHERE CODEID = (SELECT COMMISSIONGRADE FROM HELPER 
+										WHERE HELPERNO = #{helperNo})),
+				default,
+				#{serviceEndTime },
+				(to_number(#{serviceEndTime})-to_number(#{serviceStartTime}))*(select codename from code where codeid='P01'),
+				#{serviceDate},
+				#{serviceDemand},
+				#{helperNo},
+				(SELECT P.PATIENTNO "patientNo"
+					FROM PATIENT P, FAMILY F 
+					WHERE P.FAMILYNO = F.FAMILYNO
+					AND F.FAMILYNO = #{familyNo}),
+				sysdate,
+				#{serviceArea},
+				#{familyNo}
+				)
+	</insert>
+	
+	<select id="getSelectList" parameterType="ApplyServiceVo" resultType="map">
+		SELECT S.SERVICENO "serviceNo",
+				 S.SERVICESTARTTIME "serviceStartTime",
+				 S.SERVICEENDTIME "serviceEndTime", 
+				 S.SERVICESTATUS "serviceStatus", 
+				 TO_CHAR(S.SERVICEDATE, 'YYYY-MM-DD') "serviceDate", 
+				 S.SERVICEDEMAND "serviceDemand",
+        		 S.SERVICEAREA "serviceArea", 
+        		 S.SERVICEPRICE "servicePrice",
+        		 S.FAMILYNO "familyNo",
+        		 H.HELPERNO "helperNo",
+        		 H.HELPERTEL "helperTel", 
+        		 H.HELPERNAME "helperName", 
+        		 H.HELPERPROFILE "helperProfile" 
+ 		FROM SERVICEAPPLY S, HELPER H
+ 		WHERE S.HELPERNO = H.HELPERNO
+ 		AND SERVICENO IN ( SELECT SERVICENO 
+		                     FROM SERVICEAPPLY 
+		                     WHERE PATIENTNO = ( SELECT P.PATIENTNO "patientNo" 
+			                                     FROM FAMILY F, PATIENT P
+			                                     WHERE F.FAMILYNO = P.FAMILYNO
+			                                     AND F.FAMILYNO=#{familyNo}))
+		ORDER BY S.SERVICEDATE			                                     
+	</select>
+	
+	<select id="getSelect" parameterType="String" resultType="map">
+		SELECT S.SERVICENO "serviceNo",
+				 S.SERVICESTARTTIME "serviceStartTime",
+				 S.SERVICEENDTIME "serviceEndTime", 
+				 S.SERVICESTATUS "serviceStatus", 
+				 TO_CHAR(S.SERVICEDATE, 'YYYY-MM-DD') "serviceDate", 
+				 S.SERVICEDEMAND "serviceDemand",
+        		 S.SERVICEAREA "serviceArea", 
+        		 S.SERVICEPRICE "servicePrice",
+        		 S.FAMILYNO "familyNo",
+        		 H.HELPERNO "helperNo", 
+        		 H.HELPERNAME "helperName", 
+        		 H.HELPERPROFILE "helperProfile" 
+ 		FROM SERVICEAPPLY S, HELPER H
+ 		WHERE S.HELPERNO = H.HELPERNO
+ 		AND SERVICENO = #{value}
+	</select>
+	
+	<select id="getSelect2" parameterType="String" resultType="map">
+		SELECT REALSTARTTIME "realStartTime", 
+				REALENDTIME "realEndTime"
+		FROM SERVICEHISTORY
+		WHERE SERVICENO = #{value}
+	</select>
+	
+	<select id="getSelect3" parameterType="String" resultType="map">
+		SELECT F.FAMILYNAME "familyName", 
+				F.FAMILYNO "familyNo", 
+				F.FAMILYADDR "familyAddr", 
+				F.FAMILYTEL "familyTel", 
+				F.FAMILYEMAIL "familyEmail", 
+				S.SERVICEPRICE "servicePrice"
+		FROM FAMILY F, SERVICEAPPLY S
+		WHERE F.FAMILYNO = S.FAMILYNO
+		AND SERVICENO = #{value}
+	</select>
+	
+	<!--  즐겨찾기 정보 조회 -->
+	<select id="getSelect4" parameterType="ApplyServiceVo" resultType="map">
+		SELECT	FAMILYNO "familyNo",
+				HELPERNO "helperNo" 
+		FROM BESTLIKE
+		WHERE FAMILYNO = #{familyNo}
+		AND HELPERNO = (SELECT HELPERNO FROM SERVICEAPPLY
+						WHERE FAMILYNO = #{familyNo}
+						AND SERVICENO = #{serviceNo})
+	</select>
+	
+	<!-- 블랙리스트 정보 조회 -->
+	<select id="getSelect5" parameterType="ApplyServiceVo" resultType="map">
+		SELECT	FAMILYNO "familyNo",
+				HELPERNO "helperNo" 
+		FROM BLACKLIST
+		WHERE FAMILYNO = #{familyNo}
+		AND HELPERNO = (SELECT HELPERNO FROM SERVICEAPPLY
+						WHERE FAMILYNO = #{familyNo}
+						AND SERVICENO = #{serviceNo})
+	</select>
+	
+	<!--알림을 위한 부분, 가장 최근 서비스신청번호 조회 -->
+	<select id="getSelectLatest" parameterType="ApplyServiceVo" resultType="int">
+		SELECT MAX(SERVICENO)
+		FROM SERVICEAPPLY
+		WHERE HELPERNO = #{helperNo}
+		AND FAMILYNO = #{familyNo}
+		AND SERVICESTARTTIME = #{serviceStartTime}
+		AND SERVICEENDTIME = #{serviceEndTime}
+		AND SERVICEDATE = #{serviceDate}
+	</select>
+</mapper>

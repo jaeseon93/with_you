@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.helper.serviceHistory.mapper.ServiceHistoryMapper">
+
+	<select id="getList" parameterType="ServiceHistoryVo" resultType="map">
+		SELECT p.PATIENTNAME "patientName", 
+		 	   p.PATIENTSEX "patientSex", 
+		 	   MONTHS_BETWEEN(TRUNC(SYSDATE,'YEAR'), TRUNC(p.PATIENTBIRTH,'YEAR') ) /12 +1 "patientBirth", 	 	    
+		 	   p.PATIENTADDR "patientAddr",  
+		 	   TO_CHAR(s.SERVICEDATE,'YYYY/MM/DD') "serviceDate",
+		 	   s.SERVICENO "serviceNo"
+		FROM PATIENT p, SERVICEAPPLY s
+		WHERE p.PATIENTNO = s.PATIENTNO
+		AND s.SERVICESTATUS = 'S04'
+		AND s.HELPERNO = #{helperNo}
+	</select>
+	
+	<!--알람 떄문에 일부 칼럼 추가함-->
+	<select id="getSelect" parameterType="String" resultType="map">
+		SELECT p.PATIENTNAME "patientName", p.PATIENTSEX "patientSex", 
+		       MONTHS_BETWEEN(TRUNC(SYSDATE,'YEAR'), TRUNC(p.PATIENTBIRTH,'YEAR') ) /12 +1 "patientBirth", 
+       		   p.PATIENTADDR "patientAddr", p.PATIENTMEDICATION "patientMedication", p.PATIENTBLOOD "patientBlood", 
+       		   p.PATIENTDISEASE "patientDisease", p.PATIENTGRADE "patientGrade",  
+               TO_CHAR(s.SERVICEDATE,'YYYY/MM/DD') "serviceDate", 
+               s.SERVICESTARTTIME "serviceStartTime", s.SERVICEENDTIME "serviceEndTime", s.HELPERPRICE "helperPrice",
+               s.SERVICEDEMAND "serviceDemand", s.SERVICENO "serviceNo", 
+               h.REALSTARTTIME "realStartTime", h.REALENDTIME "realEndTime"    
+	    FROM PATIENT p, SERVICEAPPLY s, SERVICEHISTORY h
+        WHERE p.PATIENTNO = s.PATIENTNO
+	    AND s.SERVICENO = h.SERVICENO(+)
+		AND s.SERVICENO = #{value}
+
+	</select>
+	
+</mapper> 

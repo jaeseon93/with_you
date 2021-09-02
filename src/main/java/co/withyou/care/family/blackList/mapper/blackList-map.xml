@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.withyou.care.family.blackList.mapper.BlackListMapper">
+	
+	<insert id="blackListInsert" parameterType="BlackListVo">
+		INSERT INTO BLACKLIST (HELPERNO, FAMILYNO)
+		VALUES (#{helperNo}, #{familyNo})		
+	</insert>
+	
+	<delete id="blackListDelete" parameterType="BlackListVo">
+		DELETE FROM BLACKLIST
+		WHERE HELPERNO = #{helperNo} 
+		AND FAMILYNO = #{familyNo} 
+	</delete>
+	
+	<select id="getSelectList" parameterType="BlackListVo" resultType="map">
+		SELECT H.HELPERPROFILE "helperProfile", 
+				H.HELPERNAME "helperName", 
+				H.HELPERSEX "helperSex", 
+				H.HELPERNO "helperNo",
+				B.FAMILYNO "familyNo"
+		FROM BLACKLIST B, HELPER H
+		WHERE B.HELPERNO=H.HELPERNO
+		AND FAMILYNO = #{familyNo}
+	</select>
+	
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="co.withyou.care.helper.update.mapper.HelperUpdateMapper">
+
+	<select id="getSelect" parameterType="LoginHelperVO" resultType="LoginHelperVO">
+		SELECT helperName,helperBirth,helperPw,helperSex,helperTel,helperEmail,helperEmail,helperWorkArea,helperStartTime,helperEndTime,helperUnique,helperAddr,commissionGrade
+		FROM Helper
+		WHERE helperNo = #{helperNo}		
+	</select>
+		
+	<update id="HelperUpdate" parameterType="UpdateHelperVo">
+		UPDATE Helper
+		<set> 
+		<if test="helperTel != null and ' '">helperTel = #{helperTel},</if>
+		<if test="helperPw != null and ' '">helperPw = #{helperPw},</if>
+		<if test="helperWorkArea != null and ' '">helperWorkArea = #{helperWorkArea},</if>
+		<if test="helperStartTime != null and ' '">helperStartTime= #{helperStartTime},</if>
+		<if test="helperEndTime != null and ' '">helperEndTime= #{helperEndTime},</if>
+		<if test="helperUnique != null and ' '">helperUnique = #{helperUnique},</if>
+		<if test="helperAddr != null and ' '">helperAddr = #{helperAddr},</if>
+		helperProfile = #{helperProfile}
+		</set>
+		WHERE helperNo = #{helperNo}
+	</update>
+</mapper>	

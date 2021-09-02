@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.withyou.care.helper.schedule.mapper.ScheduleMapper">
+	
+	<select id="getSchedule" parameterType="ScheduleSelectVo" resultType="map">
+		SELECT p.PATIENTNAME "title",
+			   p.FAMILYNO "familyNo",
+       	       TO_CHAR(s.SERVICEDATE,'YYYY-MM-DD')||'T'||s.SERVICESTARTTIME||':00:00'  "start", 
+       	       TO_CHAR(s.SERVICEDATE,'YYYY-MM-DD')||'T'||s.SERVICEENDTIME||':00:00' "end", 
+       	       s.SERVICESTARTTIME "serviceStartTime", 
+       	       s.SERVICEENDTIME "serviceEndTime",
+       	       s.SERVICENO "serviceNo",
+       	       f.familytel "familyTel"
+		FROM PATIENT p, SERVICEAPPLY s, FAMILY f 
+		WHERE f.FAMILYNO = s.FAMILYNO
+		AND p.PATIENTNO = s.PATIENTNO
+		AND s.SERVICESTATUS = 'S03'
+		AND s.SERVICEDATE = #{serviceDate}
+		AND s.HELPERNO = #{helperNo}
+	</select>
+
+	<select id="getCaleadar" parameterType="ScheduleSelectVo" resultType="map">
+		SELECT p.PATIENTNAME "title",
+       	       TO_CHAR(s.SERVICEDATE,'YYYY-MM-DD')||'T'||s.SERVICESTARTTIME||':00:00'  "start", 
+       	       TO_CHAR(s.SERVICEDATE,'YYYY-MM-DD')||'T'||s.SERVICEENDTIME||':00:00' "end", 
+       	       s.SERVICESTARTTIME "serviceStartTime", 
+       	       s.SERVICEENDTIME "serviceEndTime",
+       	       s.SERVICENO "serviceNo"
+		FROM PATIENT p, SERVICEAPPLY s
+		WHERE p.PATIENTNO = s.PATIENTNO
+		AND s.SERVICESTATUS = 'S03'
+		AND s.HELPERNO = #{helperNo}
+	</select>
+
+
+
+
+	<!-- 알람을 위해 일부 컬럼 추가함-->
+	<select id="getSelect" parameterType="String" resultType="map">
+		SELECT f.FAMILYNAME "familyName", f.FAMILYTEL "familyTel", f.FAMILYEMAIL "familyEmail", f.FAMILYNO "familyNo",
+		       p.PATIENTNAME "patientName", MONTHS_BETWEEN(TRUNC(SYSDATE,'YEAR'), TRUNC(p.PATIENTBIRTH,'YEAR') ) /12 +1 "patientBirth",
+		       p.PATIENTADDR "patientAddr", p.PATIENTMEDICATION "patientMedication", p.PATIENTBLOOD "patientBlood", p.PATIENTSEX "patientSex", 
+		       p.PATIENTTEL "patientTel", p.PATIENTFAMILYTEL "patientFamilyTel", p.PATIENTDISEASE "patientDisease",
+		       p.PATIENTGRADE "patientGrade", p.PATIENTUNIQUE "patientUnique", p.PATIENTNO "patientNo",
+		       s.SERVICEDEMAND "serviceDemand", s.SERVICESTARTTIME "serviceStartTime", s.SERVICEENDTIME "serviceEndTime", 
+               s.SERVICENO "serviceNo", s.SERVICEDATE "serviceDate", s.APPLYDATE "applyDate"
+		FROM PATIENT p, FAMILY f, SERVICEAPPLY s
+		WHERE s.PATIENTNO = p.PATIENTNO
+		AND s.FAMILYNO = f.FAMILYNO
+		AND s.SERVICENO = #{value}
+		
+	</select>
+	
+	<select id="getStartTime" parameterType="int" resultType="co.withyou.care.helper.schedule.service.ServiceHistoryVO" >
+		SELECT REALSTARTTIME "realStartTime"
+		FROM SERVICEHISTORY
+		WHERE SERVICENO = #{value}
+	</select>
+	
+	<select id="getEndTime" parameterType="int" resultType="co.withyou.care.helper.schedule.service.ServiceHistoryVO" >
+		SELECT REALENDTIME "realEndTime"
+		FROM SERVICEHISTORY 
+		WHERE SERVICENO = #{value}
+	</select>
+	
+	<select id="getRealTimes" parameterType="int" resultType="co.withyou.care.helper.schedule.service.ServiceHistoryVO" >
+		SELECT REALSTARTTIME "realStartTime",
+			   REALENDTIME "realEndTime"
+		FROM SERVICEHISTORY 
+		WHERE SERVICENO = #{value}
+	</select>
+	
+	<insert id="insertStartTime" parameterType="co.withyou.care.helper.schedule.service.ServiceHistoryVO">
+		INSERT INTO SERVICEHISTORY(SERVICENO, REALSTARTTIME)
+		VALUES (#{serviceNo}, SYSDATE)
+	</insert>
+	
+	<update id="updateEndTime" parameterType="co.withyou.care.helper.schedule.service.ServiceHistoryVO">
+		UPDATE SERVICEHISTORY
+		SET REALENDTIME = SYSDATE
+		WHERE SERVICENO = #{serviceNo}
+	</update>
+	
+	<update id="updateServiceStatus" parameterType="int">
+		UPDATE SERVICEAPPLY
+		SET SERVICESTATUS = 'S04'
+		WHERE SERVICENO = #{serviceNo}
+	</update>
+</mapper>

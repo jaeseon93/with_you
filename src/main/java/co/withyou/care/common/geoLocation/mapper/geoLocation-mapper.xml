@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.withyou.care.common.geoLocation.mapper.GeoLocationMapper">
+
+	<insert id="insertPatientLoc" parameterType="co.withyou.care.common.geoLocation.service.PatientLocVO">
+		INSERT INTO PATIENTLOC(PATIENTLOCNO, PATIENTLONGITUDE, PATIENTLATITUDE, PATIENTLOCTIME, PATIENTNO) 
+		VALUES(PLOC_SQ.NEXTVAL, #{patientLongitude}, #{patientLatitude}, #{patientLoctime} , #{patientNo})
+	</insert>
+	
+	<select id="getPatientLoc" parameterType="co.withyou.care.common.geoLocation.service.PatientLocVO"
+							   resultType="co.withyou.care.common.geoLocation.service.PatientLocVO">
+		SELECT DISTINCT PATIENTLATITUDE, PATIENTLONGITUDE 
+		FROM PATIENTLOC 
+		WHERE PATIENTNO = #{patientNo}
+		AND PATIENTLOCTIME = (SELECT MAX(PATIENTLOCTIME) 
+		    FROM PATIENTLOC 
+		    WHERE PATIENTNO = #{patientNo})
+	</select>
+	
+	<select id="getPatientLocInt" parameterType="int" resultType="co.withyou.care.common.geoLocation.service.PatientLocVO">
+		SELECT DISTINCT PATIENTLATITUDE, PATIENTLONGITUDE 
+		FROM PATIENTLOC 
+		WHERE PATIENTNO = (SELECT PATIENTNO FROM SERVICEAPPLY WHERE SERVICENO = #{value})
+		AND PATIENTLOCTIME = (SELECT MAX(PATIENTLOCTIME) 
+							FROM PATIENTLOC 
+		    				WHERE PATIENTNO = (SELECT PATIENTNO FROM SERVICEAPPLY WHERE SERVICENO = #{value}))
+	</select>
+</mapper>

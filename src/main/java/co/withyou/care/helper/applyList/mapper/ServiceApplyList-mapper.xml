@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="co.withyou.care.helper.applyList.mapper.ServiceApplyListMapper">
+
+	<select id="getApplyList" parameterType="ApplyListVo" resultType="map">
+
+		select s.serviceno "serviceNo", f.familyName "familyName", s.servicestarttime "serviceStartTime",s.serviceendtime "serviceEndTime",s.servicedate "serviceDate",s.servicestatus "serviceStatus",s.serviceno "serviceNo"
+		from family f, serviceapply s, helper h
+		where h.helperNo = s.helperNo and h.helperNo = #{helperNo} and s.servicestatus ='S01' and f.familyNo = s.familyNo
+		
+	</select>
+</mapper> 
